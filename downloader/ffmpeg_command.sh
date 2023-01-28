@@ -1,0 +1,1 @@
+ffmpeg -i "" -movflags +frag_keyframe+separate_moof+omit_tfhd_offset+empty_moov  -bsf:a aac_adtstoasc -vcodec copy -c copy -crf 50 test.mp4

@@ -1,0 +1,7 @@
+DROP TABLE IF EXISTS queue;
+CREATE TABLE queue (
+  id TEXT,
+  url TEXT,
+  flag INTEGER DEFAULT 0,
+  PRIMARY KEY (`id`)
+);

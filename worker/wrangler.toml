@@ -1,0 +1,12 @@
+name = "worker"
+main = "src/index.ts"
+compatibility_date = "2023-01-28"
+
+[[ d1_databases ]]
+binding = "DB" # i.e. available in your Worker on env.DB
+database_name = "ttvodlol-test"
+preview_database_id = "b96248f0-94c0-429d-93ec-75d5b8c19510"
+database_id = "b96248f0-94c0-429d-93ec-75d5b8c19510"
+# production 
+# database_name = "ttvodlol"
+# database_id = "4d870670-3ac1-4994-814b-e570e50789e2"
