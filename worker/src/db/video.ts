@@ -42,7 +42,7 @@ export const upsertVideo = async (db: D1Database, video: Video) => {
 
 export const getQueue = async (db: D1Database) => {
   const { results } = await db
-    .prepare("SELECT id, url FROM queue WHERE flag=0")
+    .prepare("SELECT id, url, created_at FROM queue WHERE flag=0")
     .all();
   return results;
 };
