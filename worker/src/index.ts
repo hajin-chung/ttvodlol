@@ -22,7 +22,7 @@ export interface Env {
 
 import { Router } from "itty-router";
 import { flagQueue, getQueue, upsertVideo } from "./db/video";
-import { getToken, getVideosByBroadCaster } from "./twitch/api";
+import { getToken, getVideoInfo, getVideosByBroadCaster } from "./twitch/api";
 
 const router = Router();
 router.get("/ping", async (req) => {
@@ -54,7 +54,7 @@ router.get("/download/all", async (req, env) => {
       throw Error("token undefined");
     }
     const videos = await getVideosByBroadCaster("150664679", token);
-    await Promise.all(videos.map(async ({ id }) => upsertVideo(env.DB, id)));
+    await Promise.all(videos.map(async (video) => upsertVideo(env.DB, video)));
     return new Response(
       JSON.stringify({
         videos,
@@ -72,13 +72,27 @@ router.get("/download/all", async (req, env) => {
 });
 
 router.get("/download/:id", async (req, env) => {
-  const id = req.params.id;
-  const success = upsertVideo(env.DB, id);
-  return new Response(
-    JSON.stringify({
-      error: !success,
-    })
-  );
+  try {
+    const token = await getToken();
+    if (!token) {
+      throw Error("token undefined");
+    }
+    const id = req.params.id;
+    const video = await getVideoInfo(id, token);
+    const success = upsertVideo(env.DB, video);
+    return new Response(
+      JSON.stringify({
+        error: !success,
+      })
+    );
+  } catch (error) {
+    return new Response(
+      JSON.stringify({
+        error,
+        message: "error",
+      })
+    );
+  }
 });
 
 router.post("/queue/flag/:id", async (req, env) => {

@@ -16,23 +16,35 @@ export const getToken = async () => {
   return json["access_token"];
 };
 
-type Video = {
+export type Video = {
   id: string;
   user_name: string;
   title: string;
   created_at: string;
-}
+};
 
 export const getVideosByBroadCaster = async (userId: string, token: string) => {
-  const res = (await (
-    await fetch(`https://api.twitch.tv/helix/videos?user_id=${userId}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Client-Id": env.CLIENT_ID,
-      },
-    })
-  ).json()) as any;
-  return res.data as Video[];
+  let data:Video[] = [];
+  let cursor: string | undefined = undefined;
+  do {
+    const res = (await (
+      await fetch(
+        `https://api.twitch.tv/helix/videos?user_id=${userId}${
+          cursor ? `&after=${cursor}` : ""
+        }`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Client-Id": env.CLIENT_ID,
+          },
+        }
+      )
+    ).json()) as any;
+    console.log(res);
+    data.push(...res.data as Video[]);
+    cursor = res.pagination.cursor as string | undefined;
+  } while (cursor);
+  return data;
 };
 
 export const getVideoInfo = async (videoId: string, token: string) => {

@@ -1,5 +1,4 @@
 import { describe, test } from "vitest";
-import { checkVideo, upsertVideo } from "./db/video";
 import { getToken, getVideosByBroadCaster, getVideoURL } from "./twitch/api";
 
 describe("twitch api", () => {
@@ -21,13 +20,5 @@ describe("twitch api", () => {
   test("get video url", async () => {
     const videoUrl = await getVideoURL("1719822060");
     console.log(videoUrl);
-  });
-  test("check video on db", async () => {
-    const exists = await checkVideo("1719822060");
-    console.log(exists);
-  });
-  test("put video on db", async () => {
-    const res = await upsertVideo("1719822060");
-    console.log(res);
   });
 });
