@@ -39,3 +39,23 @@ export const upsertVideo = async (db: D1Database, videoId: string) => {
   }
   return false;
 };
+
+export const getQueue = async (db: D1Database) => {
+  const { results } = await db
+    .prepare("SELECT id, url FROM queue WHERE flag=0")
+    .all();
+  return results;
+};
+
+export const flagQueue = async (db: D1Database, id: string) => {
+  try {
+    const { success } = await db
+      .prepare(`UPDATE queue SET flag=1 WHERE id=?`)
+      .bind(id)
+      .run();
+    return success;
+  } catch (error) {
+    console.error(error);
+    return false;
+  }
+};

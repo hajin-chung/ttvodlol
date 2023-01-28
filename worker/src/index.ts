@@ -21,7 +21,7 @@ export interface Env {
 }
 
 import { Router } from "itty-router";
-import { upsertVideo } from "./db/video";
+import { flagQueue, getQueue, upsertVideo } from "./db/video";
 import { getToken, getVideosByBroadCaster } from "./twitch/api";
 
 const router = Router();
@@ -77,6 +77,27 @@ router.get("/download/:id", async (req, env) => {
   return new Response(
     JSON.stringify({
       error: !success,
+    })
+  );
+});
+
+router.post("/queue/flag/:id", async (req, env) => {
+  const id = req.params.id as string;
+  console.log(id);
+  const success = await flagQueue(env.DB, id);
+  console.log(success);
+  return new Response(
+    JSON.stringify({
+      success,
+    })
+  );
+});
+
+router.get("/queue", async (req, env) => {
+  const videos = await getQueue(env.DB);
+  return new Response(
+    JSON.stringify({
+      videos,
     })
   );
 });
